@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. Aircraft Tree View -->
+    <record id="view_aircraft_tree" model="ir.ui.view">
+        <field name="name">aircraft.aircraft.tree</field>
+        <field name="model">aircraft.aircraft</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 2. Component Tree View -->
+    <record id="view_component_tree" model="ir.ui.view">
+        <field name="name">aircraft.component.tree</field>
+        <field name="model">aircraft.component</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="aircraft_id"/>
+                <field name="total_hours"/>
+                <field name="total_cycles"/>
+                <field name="next_due_hours"/>
+                <field name="is_installed"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 3. Flight Log Tree View (Includes is_emergency) -->
+    <record id="view_flight_log_tree" model="ir.ui.view">
+        <field name="name">aircraft.flight.log.tree</field>
+        <field name="model">aircraft.flight.log</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="flight_date"/>
+                <field name="aircraft_id"/>
+                <field name="flight_hours"/>
+                <field name="cycles"/>
+                <!-- This field triggers the auto-creation of a Finding -->
+                <field name="is_emergency"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Corrected Finding Tree View -->
+    <record id="view_finding_tree" model="ir.ui.view">
+        <field name="name">aircraft.finding.tree</field>
+        <field name="model">aircraft.finding</field>
+        <field name="arch" type="xml">
+            <!-- Removed create/edit/delete="false" to fix fetching issues -->
+            <tree>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="is_tle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Corrected Installation History Tree View -->
+    <record id="view_installation_history_tree" model="ir.ui.view">
+        <field name="name">aircraft.installation.history.tree</field>
+        <field name="model">aircraft.component.installation</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="component_id"/>
+                <field name="aircraft_id"/>
+                <field name="installed_at"/>
+                <field name="removed_at"/>
+                <field name="is_active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Window Actions -->
+    <record id="action_aircraft" model="ir.actions.act_window">
+        <field name="name">Aircraft</field>
+        <field name="res_model">aircraft.aircraft</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_component" model="ir.actions.act_window">
+        <field name="name">Components</field>
+        <field name="res_model">aircraft.component</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_flight_log" model="ir.actions.act_window">
+        <field name="name">Flight Logs</field>
+        <field name="res_model">aircraft.flight.log</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_finding" model="ir.actions.act_window">
+        <field name="name">Findings</field>
+        <field name="res_model">aircraft.finding</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_installation_history" model="ir.actions.act_window">
+        <field name="name">Installation History</field>
+        <field name="res_model">aircraft.component.installation</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Main Menu Structure -->
+    <menuitem id="menu_aircraft_root" name="Aircraft Maintenance" sequence="10"/>
+    
+    <menuitem id="menu_aircraft" name="Aircraft" parent="menu_aircraft_root" 
+              action="action_aircraft" sequence="10"/>
+              
+    <menuitem id="menu_component" name="Components" parent="menu_aircraft_root" 
+              action="action_component" sequence="20"/>
+              
+    <menuitem id="menu_flight_log" name="Flight Logs" parent="menu_aircraft_root" 
+              action="action_flight_log" sequence="30"/>
+              
+    <menuitem id="menu_finding" name="Findings" parent="menu_aircraft_root" 
+              action="action_finding" sequence="40"/>
+              
+    <menuitem id="menu_installation_history" name="Installation History" parent="menu_aircraft_root" 
+              action="action_installation_history" sequence="50"/>
+</odoo>

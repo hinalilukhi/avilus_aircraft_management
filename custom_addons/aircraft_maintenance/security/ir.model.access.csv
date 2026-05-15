@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_aircraft,aircraft,model_aircraft_aircraft,base.group_user,1,1,1,1
+access_component,component,model_aircraft_component,base.group_user,1,1,1,1
+access_flight_log,flight_log,model_aircraft_flight_log,base.group_user,1,1,1,1
+access_finding,finding,model_aircraft_finding,base.group_user,1,1,1,1
+access_installation,installation,model_aircraft_component_installation,base.group_user,1,1,1,1
