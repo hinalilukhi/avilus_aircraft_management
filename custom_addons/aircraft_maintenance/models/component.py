@@ -47,9 +47,45 @@ class Component(models.Model):
             comp.next_due_hours = hours_due
             comp.next_due_cycles = cycles_due
 
-            return {
-                "calendar_due": calendar_due,
-                "hours_remaining": hours_due,
-                "cycles_remaining": cycles_due,
-            }
+        return True
+    
+    def write(self, vals):
+
+        old_values = {rec.id: rec.is_installed for rec in self}
+
+        res = super().write(vals)
+
+        for rec in self:
+
+            old = old_values[rec.id]
+            new = rec.is_installed
+
+            # ---------------------------------
+            # INSTALLATION EVENT
+            # ---------------------------------
+            if not old and new:
+                self.env["aircraft.component.installation"].create({
+                    "component_id": rec.id,
+                    "aircraft_id": rec.aircraft_id.id,
+                    "installed_at": fields.Datetime.now(),
+                    "is_active": True
+                })
+
+            # ---------------------------------
+            # UNINSTALLATION EVENT
+            # ---------------------------------
+            if old and not new:
+
+                history = self.env["aircraft.component.installation"].search([
+                    ("component_id", "=", rec.id),
+                    ("is_active", "=", True)
+                ], limit=1)
+
+                if history:
+                    history.write({
+                        "removed_at": fields.Datetime.now(),
+                        "is_active": False
+                    })
+
+        return res
 
